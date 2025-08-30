@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>भारत मौसम रिपोर्ट</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .states {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .states button {
+      padding: 10px 20px;
+      background-color: #008CBA;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .states button:hover {
+      background-color: #005f73;
+    }
+    #weatherResult {
+      border: 1px solid #ddd;
+      padding: 20px;
+      background-color: #f9f9f9;
+      max-width: 400px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>भारत राज्य मौसम रिपोर्ट</h1>
+
+  <div class="states">
+    <button onclick="getWeather('Delhi')">दिल्ली</button>
+    <button onclick="getWeather('Mumbai')">महाराष्ट्र</button>
+    <button onclick="getWeather('Kolkata')">पश्चिम बंगाल</button>
+    <button onclick="getWeather('Chennai')">तमिलनाडु</button>
+    <button onclick="getWeather('Bengaluru')">कर्नाटक</button>
+    <button onclick="getWeather('Jaipur')">राजस्थान</button>
+    <!-- और राज्य भी जोड़ सकते हैं -->
+  </div>
+
+  <div id="weatherResult">कृपया राज्य पर क्लिक करें मौसम देखने के लिए।</div>
+
+  <script>
+    const apiKey = "e773b4d1f786beac1cdbe8403f865c37"; // 🔑 अपना API key यहाँ पेस्ट करें
+
+    async function getWeather(cityName) {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName},IN&appid=${apiKey}&units=metric&lang=hi`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.cod === 200) {
+          const html = `
+            <h3>${data.name} का मौसम</h3>
+            <p>🌡️ तापमान: ${data.main.temp}°C</p>
+            <p>🌤️ मौसम: ${data.weather[0].description}</p>
+            <p>💨 हवा की रफ्तार: ${data.wind.speed} m/s</p>
+            <p>🌫️ आद्रता: ${data.main.humidity}%</p>
+          `;
+          document.getElementById("weatherResult").innerHTML = html;
+        } else {
+          document.getElementById("weatherResult").innerText = "मौसम डेटा नहीं मिला।";
+        }
+      } catch (error) {
+        document.getElementById("weatherResult").innerText = "कोई त्रुटि हुई।";
+        console.error(error);
+      }
+    }
+  </script>
+
+</body>
+</html>
